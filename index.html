@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Docker - fast bootcamp for busy people</title>
+
+    <meta name="description" content="">
+    <meta name="author" content="David Schmitz">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="lib/css/koenighotze.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section data-state="something">
+          <h1>Docker</h1>
+          <h3>Introduction for the Busy Developer</h3>
+          <img class="logo" src="https://www.docker.com/sites/all/themes/docker/assets/images/logo.png"/>
+          <p>
+            <small><a href="mailto:david.schmitz_AT_senacor.com?subject=Docker">David Schmitz</a> / <a href="http://twitter.com/koenighotze">@koenighotze</a></small>
+          </p>
+        </section>
+
+        <section>
+          <h2>Docker Toolbox</h2>
+
+          Grab it here: <a href="https://www.docker.com/docker-toolbox">https://www.docker.com/docker-toolbox</a>
+          <img class="logo" src="https://www.docker.com/sites/default/files/products/tbox.jpg"/>
+        </section>
+
+
+        <section>
+          <h2>Containers, Images, Registries</h2>
+          <ul>
+            <li>Registries: provide images</li>
+            <li>Images: binary templates for containers</li>
+            <li>Container: an instance of an image</li>
+          </ul>
+        </section>
+
+
+        <section>
+          <h2>Basic stuff</h2>
+
+          <pre>
+            <code data-trim contenteditable class="bash">
+$ docker-machine start default
+$ eval "$(docker-machine env default)"
+$ docker run hello-world
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <h2>Breaking your system</h2>
+
+          <pre>
+          <code data-trim contenteditable class="bash">
+$ docker run -ti ubuntu /bin/bash
+root@32b5e993aa27:/usr# cd /bin
+root@32b5e993aa27:/bin# ls
+bash     bzip2recover  dash
+
+root@32b5e993aa27:/bin# rm -fr *
+root@32b5e993aa27:/bin# ls
+bash: /bin/ls: No such file or directory
+$ docker rm 32b5e993aa27
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <h2>Playing with containers</h2>
+
+          <pre>
+            <code data-trim contenteditable class="bash">
+$ docker ps -a
+$ docker run -ti --name myubuntu ubuntu /bin/bash
+root@44998caf130c:/# exit
+
+$ docker ps -a
+
+$ docker inspect myubuntu
+
+$ docker start myubuntu
+$ docker attach myubuntu
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <h2>Exploring the container</h2>
+
+          <pre>
+            <code data-trim contenteditable class="elixir">
+$ docker ps -a
+$ docker run -ti --name myubuntu ubuntu /bin/bash
+root@44998caf130c:/# exit
+
+$ docker ps -a
+$ docker inspect myubuntu
+$ docker start myubuntu
+$ docker attach myubuntu
+root@44998caf130c:/# cat /etc/hosts
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <h2>Running Twitter in NGINX</h2>
+<ul class="simple">
+  <li class="fragment">
+    <pre>
+      <code data-trim contenteditable class="bash">
+$ docker run --name myweb -v $HOME/content:/usr/share/nginx/html:ro \
+  -p 8080:80 -d nginx
+      </code>
+    </pre>
+  </li>
+  <li class="fragment">
+    <pre>
+      <code data-trim contenteditable class="bash">
+$ cd $HOME/content
+$ wget http://twitter.com
+--2015-11-26 18:41:22--  http://twitter.com/
+...
+$ cd -
+      </code>
+    </pre>
+  </li>
+  <li class="fragment">
+    <pre>
+      <code data-trim contenteditable class="bash">
+$ docker-machine ip default
+192.168.99.100
+$ open http://$(docker-machine ip default):8080
+$ docker logs myweb
+      </code>
+    </pre>
+  </li>
+</ul>
+
+        </section>
+
+        <section>
+          <h2>Linking containers</h2>
+          <ul class="simple">
+            <li class="fragment">
+          <pre>
+            <code data-trim contenteditable class="bash">
+$ docker run --name oneweb -v $HOME/content:/usr/share/nginx/html:ro \
+  -p 8080:80 -d nginx
+            </code>
+          </pre>
+        </li>
+        <li class="fragment">
+      <pre>
+        <code data-trim contenteditable class="bash">
+$ docker run -ti --link oneweb --name myubuntu \
+  --volumes-from oneweb ubuntu /bin/bash
+
+root@12d9f8b3920f:/# cat /etc/hosts
+...
+172.17.0.2	oneweb e5711a2afc6d
+
+root@a6e7ac720e5d:/# ls /usr/share/nginx/html/
+index.html  stuff.html
+        </code>
+      </pre>
+      </li>
+      </ul>
+        </section>
+
+          <section>
+            <h2>Building an image</h2>
+          <pre>
+            <code data-trim contenteditable class="bash">
+$ ls
+Dockerfile
+
+$ docker build -t koenighotze/demoimage .
+            </code>
+          </pre>
+        </section>
+
+        <section>
+        <section>
+          <h2>Dockerfile - Jdk9</h2>
+          Full example <a href="http://git.io/vBKLS" target="_blank">http://git.io/vBKLS</a>
+
+            <pre>
+            <code data-trim contenteditable class="dockerfile">
+FROM ubuntu:15.04
+MAINTAINER David Schmitz &lt;koenighotze@yahoo.com&gt;
+
+RUN apt-get -qq update
+RUN apt-get -y install curl wget
+            </code>
+            </pre>
+          </section>
+          <section>
+            <h2>Installing tools</h2>
+            <pre>
+            <code data-trim contenteditable class="dockerfile">
+WORKDIR /tmp/
+
+RUN wget --no-check-certificate --no-cookies \
+    --header &quot;Cookie: oraclelicense=accept-securebackup-cookie&quot; \
+    http://www.java.net/download/jdk9/archive/b85/binaries/jdk.tar.gz
+RUN tar xvzf jdk-9-ea-bin-b85-linux-x64-08_oct_2015.tar.gz &amp;&amp; \
+    rm jdk-9-ea-bin-b85-linux-x64-08_oct_2015.tar.gz
+RUN mv jdk1.9.0 /usr/local/
+
+ENV PATH /usr/local/jdk1.9.0/bin:$PATH
+            </code>
+            </pre>
+          </section>
+          <section>
+            <h2>Exposing volumes and running commands</h2>
+            <pre>
+            <code data-trim contenteditable class="dockerfile">
+# setup volume for external sources
+RUN mkdir -p /home/java/share
+ENV SRC_VOLUME /home/java/share
+VOLUME [$SRC_VOLUME]
+
+CMD [&quot;java&quot;, &quot;-version&quot;]
+
+            </code>
+            </pre>
+    </section>
+  </section>
+
+
+
+    <section>
+
+
+        <section>
+          <h2>Dockerfile - JEE example</h2>
+
+          <pre>
+            <code data-trim contenteditable class="dockerfile">
+$ cat Dockerfile
+FROM jboss/wildfly
+MAINTAINER Koenig Hotze
+ENV REFRESHED_AT 20151107
+
+RUN /opt/jboss/wildfly/bin/add-user.sh admin geheim123 --silent
+
+ADD guest-1.0-SNAPSHOT.war /opt/jboss/wildfly/standalone/deployments/
+
+CMD [&quot;/opt/jboss/wildfly/bin/standalone.sh&quot;, &quot;-c&quot;, \
+     &quot;standalone-full.xml&quot;, &quot;-b&quot;, &quot;0.0.0.0&quot;, \
+     &quot;-bmanagement&quot;, &quot;0.0.0.0&quot;]
+            </code>
+          </pre>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Docker + Maven</h2>
+          Full example <a href="http://git.io/vBKLk" target="_blank">http://git.io/vBKLk</a>
+          <pre>
+            <code data-trim contenteditable class="xml">
+&lt;plugin&gt;
+  &lt;groupId&gt;com.spotify&lt;/groupId&gt;
+  &lt;artifactId&gt;docker-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;0.3.6&lt;/version&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;phase&gt;package&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;build&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+
+  &lt;configuration&gt;
+  ...
+  &lt;/configuration&gt;
+&lt;/plugin&gt;
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h2>Docker + Maven</h2>
+
+          <pre>
+            <code data-trim contenteditable class="xml">
+&lt;configuration&gt;
+  &lt;imageName&gt;koenighotze/jee7hotelguest&lt;/imageName&gt;
+  &lt;dockerDirectory&gt;src/docker&lt;/dockerDirectory&gt;
+  &lt;resources&gt;
+     &lt;resource&gt;
+       &lt;targetPath&gt;/&lt;/targetPath&gt;
+       &lt;directory&gt;${project.build.directory}&lt;/directory&gt;
+       &lt;include&gt;${project.build.finalName}.war&lt;/include&gt;
+     &lt;/resource&gt;
+  &lt;/resources&gt;
+&lt;/configuration&gt;
+            </code>
+          </pre>
+        </section>
+
+      </section>
+
+
+      <section>
+        <section>
+          <h2>Docker-Compose</h2>
+          Full example <a href="http://git.io/vBKI9" target="_blank">http://git.io/vBKI9</a>
+          <pre>
+            <code data-trim contenteditable class="bash">
+$ cat docker-compose.yml
+
+booking:
+  image: koenighotze/jee7hotelbooking
+  ports:
+    - 8082:8080
+    - 9992:9990
+...
+portal:
+  image: koenighotze/jee7hotelportal
+  environment:
+      DOCKER_MACHINE_IP: $(docker-machine ip default)
+  ports:
+    - 9995:9990
+    - 80:8080
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <h2>Running Docker-Compose</h2>
+
+          <pre>
+            <code data-trim contenteditable class="bash">
+$ docker-compose up
+$ open http://$(docker-ip)
+            </code>
+          </pre>
+        </section>
+        </section>
+
+
+<!-- ////////////////////////////////////////////////////////  -->
+        <section>
+          <h2>Online Resources</h2>
+          <p>Try one of these great vaults of wisdom:</p>
+
+          <ul>
+            <li><a href="https://www.docker.com/">Docker Homepage</a></li>
+            <li><a href="https://github.com/wsargent/docker-cheat-sheet">Docker Cheatsheet</a></li>
+            <li><a href="http://http://www.dockerbook.com/">James Turnbull, Docker Book</a></li>
+          </ul>
+        </section>
+
+
+        <section style="text-align: left;">
+          <h1>Thank You!</h1>
+          Questions? Feedback?
+          <p>
+            <small><a href="mailto:david.schmitz_AT_senacor.com?subject=Docker">David Schmitz</a> / <a href="http://twitter.com/koenighotze">@koenighotze</a></small>
+          </p>
+        </section>
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <a href="https://github.com/koenighotze/talks-docker-intro">
+      <img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png">
+    </a>
+
+    <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        slideNumber: true,
+        help: true,
+        previewLinks: false,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+          { src: 'plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>

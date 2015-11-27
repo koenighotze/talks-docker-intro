@@ -1,0 +1,27 @@
+ul.simple {
+  list-style: none;
+  width: 100%;
+}
+
+section img.logo {
+  background-color: white;
+  border: medium none;
+  padding: 0.5em;
+}
+
+section img.simple-image {
+  border: none;
+  background-color: white;
+}
+
+section p {
+  text-align: left;
+}
+
+.something {
+  background-color: white;
+}
+
+img.fill {
+  background-color: white;
+}

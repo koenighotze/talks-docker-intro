@@ -72,7 +72,7 @@
         <section>
           <h2>Basic stuff</h2>
 
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="bash">
 $ docker-machine start default
 $ eval "$(docker-machine env default)"
@@ -84,7 +84,7 @@ $ docker run hello-world
         <section>
           <h2>Breaking your system</h2>
 
-          <pre>
+          <pre class="code">
           <code data-trim contenteditable class="bash">
 $ docker run -ti ubuntu /bin/bash
 root@32b5e993aa27:/usr# cd /bin
@@ -102,7 +102,7 @@ $ docker rm 32b5e993aa27
         <section>
           <h2>Playing with containers</h2>
 
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="bash">
 $ docker ps -a
 $ docker run -ti --name myubuntu ubuntu /bin/bash
@@ -121,7 +121,7 @@ $ docker attach myubuntu
         <section>
           <h2>Exploring the container</h2>
 
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="elixir">
 $ docker ps -a
 $ docker run -ti --name myubuntu ubuntu /bin/bash
@@ -140,7 +140,7 @@ root@44998caf130c:/# cat /etc/hosts
           <h2>Running Twitter in NGINX</h2>
 <ul class="simple">
   <li class="fragment">
-    <pre>
+    <pre class="code">
       <code data-trim contenteditable class="bash">
 $ docker run --name myweb -v $HOME/content:/usr/share/nginx/html:ro \
   -p 8080:80 -d nginx
@@ -148,7 +148,7 @@ $ docker run --name myweb -v $HOME/content:/usr/share/nginx/html:ro \
     </pre>
   </li>
   <li class="fragment">
-    <pre>
+    <pre class="code">
       <code data-trim contenteditable class="bash">
 $ cd $HOME/content
 $ wget http://twitter.com
@@ -159,7 +159,7 @@ $ cd -
     </pre>
   </li>
   <li class="fragment">
-    <pre>
+    <pre class="code">
       <code data-trim contenteditable class="bash">
 $ docker-machine ip default
 192.168.99.100
@@ -176,7 +176,7 @@ $ docker logs myweb
           <h2>Linking containers</h2>
           <ul class="simple">
             <li class="fragment">
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="bash">
 $ docker run --name oneweb -v $HOME/content:/usr/share/nginx/html:ro \
   -p 8080:80 -d nginx
@@ -184,7 +184,7 @@ $ docker run --name oneweb -v $HOME/content:/usr/share/nginx/html:ro \
           </pre>
         </li>
         <li class="fragment">
-      <pre>
+      <pre class="code">
         <code data-trim contenteditable class="bash">
 $ docker run -ti --link oneweb --name myubuntu \
   --volumes-from oneweb ubuntu /bin/bash
@@ -203,7 +203,7 @@ index.html  stuff.html
 
           <section>
             <h2>Building an image</h2>
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="bash">
 $ ls
 Dockerfile
@@ -218,7 +218,7 @@ $ docker build -t koenighotze/demoimage .
           <h2>Dockerfile - Jdk9</h2>
           Full example <a href="http://git.io/vBKLS" target="_blank">http://git.io/vBKLS</a>
 
-            <pre>
+            <pre class="code">
             <code data-trim contenteditable class="dockerfile">
 FROM ubuntu:15.04
 MAINTAINER David Schmitz &lt;koenighotze@yahoo.com&gt;
@@ -230,7 +230,7 @@ RUN apt-get -y install curl wget
           </section>
           <section>
             <h2>Installing tools</h2>
-            <pre>
+            <pre class="code">
             <code data-trim contenteditable class="dockerfile">
 WORKDIR /tmp/
 
@@ -247,7 +247,7 @@ ENV PATH /usr/local/jdk1.9.0/bin:$PATH
           </section>
           <section>
             <h2>Exposing volumes and running commands</h2>
-            <pre>
+            <pre class="code">
             <code data-trim contenteditable class="dockerfile">
 # setup volume for external sources
 RUN mkdir -p /home/java/share
@@ -269,7 +269,7 @@ CMD [&quot;java&quot;, &quot;-version&quot;]
         <section>
           <h2>Dockerfile - JEE example</h2>
 
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="dockerfile">
 $ cat Dockerfile
 FROM jboss/wildfly
@@ -292,7 +292,7 @@ CMD [&quot;/opt/jboss/wildfly/bin/standalone.sh&quot;, &quot;-c&quot;, \
         <section>
           <h2>Docker + Maven</h2>
           Full example <a href="http://git.io/vBKLk" target="_blank">http://git.io/vBKLk</a>
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="xml">
 &lt;plugin&gt;
   &lt;groupId&gt;com.spotify&lt;/groupId&gt;
@@ -317,7 +317,7 @@ CMD [&quot;/opt/jboss/wildfly/bin/standalone.sh&quot;, &quot;-c&quot;, \
         <section>
           <h2>Docker + Maven</h2>
 
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="xml">
 &lt;configuration&gt;
   &lt;imageName&gt;koenighotze/jee7hotelguest&lt;/imageName&gt;
@@ -341,7 +341,7 @@ CMD [&quot;/opt/jboss/wildfly/bin/standalone.sh&quot;, &quot;-c&quot;, \
         <section>
           <h2>Docker-Compose</h2>
           Full example <a href="http://git.io/vBKI9" target="_blank">http://git.io/vBKI9</a>
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="bash">
 $ cat docker-compose.yml
 
@@ -365,7 +365,7 @@ portal:
         <section>
           <h2>Running Docker-Compose</h2>
 
-          <pre>
+          <pre class="code">
             <code data-trim contenteditable class="bash">
 $ docker-compose up
 $ open http://$(docker-ip)

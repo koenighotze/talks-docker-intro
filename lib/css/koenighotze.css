@@ -1,3 +1,8 @@
+section pre.code {
+  width: 100%;
+  box-shadow: none;
+}
+
 ul.simple {
   list-style: none;
   width: 100%;

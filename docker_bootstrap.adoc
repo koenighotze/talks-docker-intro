@@ -1,9 +1,63 @@
 = Docker Bootstrap Cheat Sheet
 
-
 == Docker Machine
 
+```bash
+$ docker-machine create --driver=virtualbox test
+$ docker-machine upgrade test
+$ docker-machine ls
+$ docker-machine env test
+$ eval $(docker-machine env test)
+```
+
 == Docker
+
+=== Kata 1: Basic Container Usage
+
+
+=== Kata 2: Building a pseudo Twitter clone
+
+$ docker run --name=web -d -p 80:80 nginx:1.9.11
+$ open http://$(docker-machine ip)
+$ docker exec -ti web sh
+
+# apt-get update
+# apt-get install wget bash
+# cd /usr/share/nginx/html
+# rm *
+# wget www.twitter.com
+# exit
+
+$ open http://$(docker-machine ip)
+$ docker diff web
+$ docker commit web web:1.1
+$ docker images
+$ docker run -d -p 80:80 web:1.1
+
+
+=== Kata 3: Building a simple Unix Box for Java Development
+
+
+=== Kata 4: A simple JEE bases Self-Contained-System
+
+
+
+=== Kata 5: Appserver and Database
+
+
+
+
+
+=== Building a local twitter
+
+docker info
+docker images
+docker search alpine
+docker pull alpine:3.3
+docker run -ti --rm=true alpine:3.3 sh
+docker run -ti --name=alpine  alpine:3.3 sh
+docker ps -a
+docker attach
 
 === Handling Containers
 
